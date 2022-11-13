@@ -20,6 +20,7 @@ import {
   updateItem,
 } from '../state/reducer';
 import {TextInput, Button, Switch} from 'react-native-paper';
+import DatePicker from 'react-native-datepicker';
 
 export default function Category(props) {
   const {data} = props.route.params;
@@ -90,28 +91,41 @@ export default function Category(props) {
                                       );
                                     } else if (it.type === 'date') {
                                       return (
-                                        <View>
-                                          <TextInput
-                                            label={it.name}
-                                            value={
-                                              mach.data[cat.id].data[it.name]
-                                                ? mach.data[cat.id].data[
-                                                    it.name
-                                                  ].value
-                                                : ''
-                                            }
-                                            mode="outlined"
-                                            onChangeText={text => {
+                                        <View className="flex-row items-center">
+                                          <Text className="mr-2">{it.name}</Text>
+                                          <DatePicker
+                                            style={{width: 200}}
+                                            date={mach.data[cat.id].data[it.name]
+                                              ? mach.data[cat.id].data[it.name]
+                                                  .value
+                                              : ''}
+                                            mode="date"
+                                            placeholder={it.name}
+                                            format="DD/MM/YYYY"
+                                            confirmBtnText="Confirm"
+                                            cancelBtnText="Cancel"
+                                            customStyles={{
+                                              dateIcon: {
+                                                position: 'absolute',
+                                                left: 0,
+                                                top: 4,
+                                                marginLeft: 0,
+                                              },
+                                              dateInput: {
+                                                marginLeft: 36,
+                                              },
+                                            }}
+                                            onDateChange={date => {
+                                              console.log('date', date);
                                               dispatch(
                                                 updateItem({
                                                   catID: mach.id,
                                                   itemID: cat.id,
                                                   itemName: it.name,
-                                                  itemValue: text,
+                                                  itemValue: date,
                                                 }),
                                               );
                                             }}
-                                            className="my-2"
                                           />
                                         </View>
                                       );
