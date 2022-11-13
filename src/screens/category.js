@@ -20,20 +20,20 @@ import {
 } from '../state/reducer';
 import {TextInput, Button, Switch} from 'react-native-paper';
 
-export default function Dashboard(props) {
+export default function Category(props) {
+  const {data} = props.route.params;
   const dispatch = useDispatch();
   const {machines} = useSelector(state => state.machines);
 
   return (
     <>
-      <Header text="Dashboard" navigation={props.navigation} />
-      <View className="flex-1">
-        <ScrollView className="bg-white flex-1 p-4 bg-[#f2f2f2]">
-          {Object.values(machines).map(mach => {
-            console.log('mach', JSON.stringify(mach));
+      <Header text={data.name} navigation={props.navigation} />
+      <ScrollView className="bg-white flex-1 p-4 bg-[#f2f2f2]">
+        {Object.values(machines)
+          .filter(mach => mach.id === data.id)
+          .map(mach => {
             return (
               <View>
-                <Text className="font-bold text-[20px] mb-4 text-black">{mach.name}</Text>
                 {Object.values(mach.data).map(cat => {
                   let item = Object.values(cat.data);
                   if (machines[mach.id]) {
@@ -43,7 +43,6 @@ export default function Dashboard(props) {
                         return it;
                       }
                     });
-                    console.log('filteredArr', filteredArr);
                     return (
                       <View
                         key={cat.id}
@@ -72,13 +71,32 @@ export default function Dashboard(props) {
                                   className="my-2"
                                 />
                               );
-                            } else if (mach.attributes[it.type].type === 'date') {
+                            } else if (
+                              mach.attributes[it.type].type === 'date'
+                            ) {
                               return (
                                 <View>
-                                  <Switch value={true} className="my-2" />
+                                  <TextInput
+                                  label={it.name}
+                                  value={it.value}
+                                  mode="outlined"
+                                  onChangeText={text => {
+                                    dispatch(
+                                      updateItem({
+                                        catID: mach.id,
+                                        itemID: cat.id,
+                                        itemName: it.name,
+                                        itemValue: text,
+                                      }),
+                                    );
+                                  }}
+                                  className="my-2"
+                                />
                                 </View>
                               );
-                            } else if (mach.attributes[it.type].type === 'number') {
+                            } else if (
+                              mach.attributes[it.type].type === 'number'
+                            ) {
                               return (
                                 <TextInput
                                   label={it.name}
@@ -104,7 +122,16 @@ export default function Dashboard(props) {
                             ) {
                               return (
                                 <View className="flex-row items-center">
-                                  <Switch value={true} className="my-2" />
+                                  <Switch value={it.value ? it.value : true} className="my-2" onChange={() => {
+                                    dispatch(
+                                      updateItem({
+                                        catID: mach.id,
+                                        itemID: cat.id,
+                                        itemName: it.name,
+                                        itemValue: it.value ? !it.value : false,
+                                      }),
+                                    );
+                                  }} />
                                   <Text className="ml-2 text-black">
                                     {it.name}
                                   </Text>
@@ -137,8 +164,7 @@ export default function Dashboard(props) {
               </View>
             );
           })}
-        </ScrollView>
-      </View>
+      </ScrollView>
     </>
   );
 }
