@@ -41,11 +41,12 @@ export default function ManageCategories(props) {
         cleardata
       />
       <ScrollView className="bg-white flex-1 p-4 bg-[#f2f2f2]">
+      <View className="flex-row flex-wrap">
         {Object.values(machines).map((mach, index, fullArr) => {
           return (
             <View
               key={mach.id}
-              className="border border-[#ccc] rounded-md drop-shadow-md p-4 bg-white mb-4">
+              className="w-[350px] border border-[#ccc] rounded-md drop-shadow-md p-4 bg-white mb-4 mr-4">
               <Text className="font-bold text-[20px] text-black">
                 {mach.name}
               </Text>
@@ -243,6 +244,7 @@ export default function ManageCategories(props) {
             </View>
           );
         })}
+        </View>
       </ScrollView>
       <Button
         mode="contained"
