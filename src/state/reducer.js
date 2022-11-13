@@ -32,8 +32,6 @@ const machinesSlice = createSlice({
     addItem(state, action) {
       let catID = action.payload.catID;
       let itemID = action.payload.itemID;
-      let itemName = action.payload.itemName;
-      let itemValue = action.payload.itemValue;
 
       const obj = {
         ...state.machines,
@@ -42,14 +40,8 @@ const machinesSlice = createSlice({
           data: {
             ...state.machines[catID].data,
             [itemID]: {
-              ...state.machines[catID].data[itemID],
-              data: {
-                ...state.machines[catID].data[itemID].data,
-                [itemName]: {
-                  ...state.machines[catID].data[itemID].data[itemName],
-                  value: itemValue,
-                },
-              },
+              id: itemID,
+              data: {}
             },
           },
         },
@@ -96,7 +88,53 @@ const machinesSlice = createSlice({
         ...state.machines,
         [catID]: {
           ...state.machines[catID],
-          title: titleID
+          title: titleID,
+        },
+      };
+      state.machines = obj;
+    },
+    addAttribute(state, action) {
+      let catID = action.payload.catID;
+      let attID = action.payload.attID;
+      let attType = action.payload.attType;
+
+      const obj = {
+        ...state.machines,
+        [catID]: {
+          ...state.machines[catID],
+          attributes: {
+            ...state.machines[catID].attributes,
+            [attID]: {
+              id: attID,
+              name: '',
+              type: attType,
+            },
+          },
+        },
+      };
+      state.machines = obj;
+    },
+    deleteAttribute(state, action) {
+      let catID = action.payload.catID;
+      let attID = action.payload.attID;
+      delete state.machines[catID].attributes[attID];
+    },
+    updateAttributeValue(state, action) {
+      let catID = action.payload.catID;
+      let attID = action.payload.attID;
+      let attValue = action.payload.attValue;
+
+      const obj = {
+        ...state.machines,
+        [catID]: {
+          ...state.machines[catID],
+          attributes: {
+            ...state.machines[catID].attributes,
+            [attID]: {
+              ...state.machines[catID].attributes[attID],
+              name: attValue,
+            },
+          },
         },
       };
       state.machines = obj;
@@ -112,6 +150,9 @@ export const {
   addItem,
   updateItem,
   deleteItem,
-  setTitle
+  setTitle,
+  addAttribute,
+  updateAttributeValue,
+  deleteAttribute,
 } = machinesSlice.actions;
 export default machinesSlice.reducer;

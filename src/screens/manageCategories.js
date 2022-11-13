@@ -11,10 +11,13 @@ import {useDispatch, useSelector} from 'react-redux';
 import {RED} from '../constants';
 import Header from '../components/header';
 import {
+  addAttribute,
   addCategory,
+  deleteAttribute,
   deleteCategory,
   setMachines,
   setTitle,
+  updateAttributeValue,
   updateCategory,
 } from '../state/reducer';
 import {TextInput, Button} from 'react-native-paper';
@@ -56,37 +59,179 @@ export default function ManageCategories(props) {
                   }
                 />
               </View>
-              {/* <Button
-                mode="contained"
-                style={{borderRadius: 5, marginTop: 20}}
-                onPress={() => console.log('Pressed')}>
-                TITLE FIELD: MODEL
-              </Button> */}
-              <Menu>
-                <MenuTrigger text={`TITLE FIELD: ${mach.attributes[mach.title].name}`} customStyles={{color: '#fff'}} style={{backgroundColor: RED, borderRadius: 5, justifyContent: 'center', alignItems: 'center', paddingVertical: 12, marginTop: 20}} />
-                <MenuOptions>
-                  {Object.values(mach.attributes).map((att) => {
-                    return(
-                      <MenuOption style={{paddingVertical: 10}} customStyles={{color: '#fff'}} key={att.id} onSelect={() => {
-                        dispatch(setTitle({catID: mach.id, titleID: att.id}))
-                      }} text={att.name} />
-                    )
+              <View>
+                {mach.attributes &&
+                  Object.values(mach.attributes).map(att => {
+                    return (
+                      <View className="flex-row items-center">
+                        <TextInput
+                          value={att.name}
+                          mode="outlined"
+                          onChangeText={
+                            text => dispatch(updateAttributeValue({catID: mach.id, attID: att.id, attValue: text}))
+                          }
+                          className="flex-1"
+                        />
+                        <View className="flex-row justify-center items-center">
+                          <Text className="pl-4">{att.type.toUpperCase()}</Text>
+                          <Button
+                            icon="delete"
+                            labelStyle={{fontSize: 20, marginHorizontal: 0}}
+                            onPress={() => dispatch(deleteAttribute({catID: mach.id, attID: att.id}))}></Button>
+                        </View>
+                      </View>
+                    );
                   })}
-                </MenuOptions>
-              </Menu>
+              </View>
+              {mach.attributes ? (
+                <Menu>
+                  <MenuTrigger
+                    text={`TITLE FIELD: ${mach.title === null ? 'Unspecified' : mach.attributes[mach.title].name}`}
+                    style={{
+                      backgroundColor: RED,
+                      borderRadius: 5,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      paddingVertical: 12,
+                      marginTop: 20,
+                    }}
+                    customStyles={{
+                      triggerText: {
+                        color: 'white',
+                      },
+                    }}
+                  />
+                  <MenuOptions>
+                    {Object.values(mach.attributes).map(att => {
+                      return (
+                        <MenuOption
+                          style={{paddingVertical: 10}}
+                          customStyles={{
+                            optionText: {
+                              color: '#000',
+                              fontWeight: '600',
+                            },
+                          }}
+                          key={att.id}
+                          onSelect={() => {
+                            dispatch(
+                              setTitle({catID: mach.id, titleID: att.id}),
+                            );
+                          }}
+                          text={att.name}
+                        />
+                      );
+                    })}
+                  </MenuOptions>
+                </Menu>
+              ) : null}
               <View className="flex-row items-center">
-                <Button
-                  mode="outlined"
-                  style={{
-                    borderRadius: 5,
-                    marginTop: 20,
-                    borderColor: '#cb2030',
-                  }}
-                  onPress={() => {
-                    visible = true;
-                  }}>
-                  ADD NEW FIELD
-                </Button>
+                <Menu>
+                  <MenuTrigger
+                    text="ADD NEW FIELD"
+                    style={{
+                      backgroundColor: '#fff',
+                      borderWidth: 1,
+                      borderColor: RED,
+                      borderRadius: 5,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      padding: 12,
+                      marginTop: 20,
+                    }}
+                    customStyles={{
+                      triggerText: {
+                        color: RED,
+                      },
+                    }}
+                  />
+                  <MenuOptions>
+                    <MenuOption
+                      style={{paddingVertical: 10}}
+                      customStyles={{
+                        optionText: {
+                          color: '#000',
+                          fontWeight: '600',
+                        },
+                      }}
+                      onSelect={() => {
+                        dispatch(
+                          addAttribute({
+                            catID: mach.id,
+                            attID: `attr-${ mach.attributes && Object.keys(mach.attributes) ?
+                              Object.keys(mach.attributes).length + 1 : 0
+                            }`,
+                            attType: 'text',
+                          }),
+                        );
+                      }}
+                      text={'Text'}
+                    />
+                    <MenuOption
+                      style={{paddingVertical: 10}}
+                      customStyles={{
+                        optionText: {
+                          color: '#000',
+                          fontWeight: '600',
+                        },
+                      }}
+                      onSelect={() => {
+                        dispatch(
+                          addAttribute({
+                            catID: mach.id,
+                            attID: `attr-${ mach.attributes && Object.keys(mach.attributes) ?
+                              Object.keys(mach.attributes).length + 1 : 0
+                            }`,
+                            attType: 'date',
+                          }),
+                        );
+                      }}
+                      text={'Date'}
+                    />
+                    <MenuOption
+                      style={{paddingVertical: 10}}
+                      customStyles={{
+                        optionText: {
+                          color: '#000',
+                          fontWeight: '600',
+                        },
+                      }}
+                      onSelect={() => {
+                        dispatch(
+                          addAttribute({
+                            catID: mach.id,
+                            attID: `attr-${ mach.attributes && Object.keys(mach.attributes) ?
+                              Object.keys(mach.attributes).length + 1 : 0
+                            }`,
+                            attType: 'number',
+                          }),
+                        );
+                      }}
+                      text={'Number'}
+                    />
+                    <MenuOption
+                      style={{paddingVertical: 10}}
+                      customStyles={{
+                        optionText: {
+                          color: '#000',
+                          fontWeight: '600',
+                        },
+                      }}
+                      onSelect={() => {
+                        dispatch(
+                          addAttribute({
+                            catID: mach.id,
+                            attID: `attr-${ mach.attributes && Object.keys(mach.attributes) ?
+                              Object.keys(mach.attributes).length + 1 : 0
+                            }`,
+                            attType: 'checkbox',
+                          }),
+                        );
+                      }}
+                      text={'Checkbox'}
+                    />
+                  </MenuOptions>
+                </Menu>
 
                 <Button
                   icon="delete"
@@ -115,56 +260,7 @@ export default function ManageCategories(props) {
                   ? ''
                   : Object.keys(machines).length + 1
               }`,
-              title: 'attr-1',
-              attributes: {
-                'attr-1': {
-                  id: 'attr-1',
-                  name: 'Model',
-                  type: 'text',
-                },
-                'attr-2': {
-                  id: 'attr-2',
-                  name: 'Purchased On?',
-                  type: 'date',
-                },
-                'attr-3': {
-                  id: 'attr-3',
-                  name: 'Weight',
-                  type: 'number',
-                },
-                'attr-4': {
-                  id: 'attr-4',
-                  name: 'Does it Work?',
-                  type: 'checkbox',
-                },
-              },
-              data: {
-                'data-1': {
-                  id: 'data-1',
-                  data: {
-                    Model: {
-                      type: 'attr-1',
-                      name: 'Model',
-                      value: '',
-                    },
-                    'Purchased On?': {
-                      type: 'attr-2',
-                      name: 'Purchased On?',
-                      value: '',
-                    },
-                    Weight: {
-                      type: 'attr-3',
-                      name: 'Weight',
-                      value: '',
-                    },
-                    'Does it Work?': {
-                      type: 'attr-4',
-                      name: 'Does it Work?',
-                      value: '',
-                    },
-                  },
-                },
-              },
+              title: null,
             }),
           );
         }}>
