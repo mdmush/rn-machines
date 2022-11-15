@@ -27,7 +27,7 @@ export default function Dashboard(props) {
 
   return (
     <>
-      <Header text="Dashboard" navigation={props.navigation} />
+      <Header text="Dashboard" navigation={props.navigation} cleardata />
       <View className="flex-1">
         <ScrollView className="bg-white flex-1 p-4 bg-[#f2f2f2]">
           {Object.values(machines).map(mach => {

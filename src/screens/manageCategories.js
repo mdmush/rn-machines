@@ -87,7 +87,7 @@ export default function ManageCategories(props) {
               {mach.attributes ? (
                 <Menu>
                   <MenuTrigger
-                    text={`TITLE FIELD: ${mach.title === null ? 'Unspecified' : mach.attributes[mach.title].name}`}
+                    text={`TITLE FIELD: ${mach.title === null ? 'Unspecified' : mach.attributes[mach.title] ? mach.attributes[mach.title].name : 'Unspecified'}`}
                     style={{
                       backgroundColor: RED,
                       borderRadius: 5,
